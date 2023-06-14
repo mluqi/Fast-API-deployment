@@ -12,7 +12,7 @@ class DataInput(BaseModel):
     user_id: int
 
 # Load the model
-path = "model" 
+path = "model_id" 
 model = tf.saved_model.load(path)
 
 age_get = tf.constant([18], dtype=tf.int64)
@@ -42,10 +42,13 @@ def predict(data: DataInput):
         "gender": tf.constant([data.gender], dtype=tf.string),
         "user_id": tf.constant([data.user_id], dtype=tf.int64),
     }
-    print(data)
+    print(data.dict())
 
     scores, titles = model(input_data)
     titles = titles[0][:3]
     titles = titles.numpy().tolist()
 
-    return {"res": data}
+    return {"res": titles}
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=port, timeout_keep_alive=1200)
